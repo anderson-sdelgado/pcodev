@@ -16,6 +16,7 @@ require_once('../model/dao/TurnoDAO.class.php');
  */
 class BaseDadosCTR {
     
+    private $base = 1;
 
     public function dadosColab($versao) {
         
@@ -25,7 +26,7 @@ class BaseDadosCTR {
         
         if($versao >= 1.00){
         
-            $dados = array("dados"=>$colabDAO->dados());
+            $dados = array("dados"=>$colabDAO->dados($this->base));
             $json_str = json_encode($dados);
 
             return $json_str;
@@ -42,7 +43,7 @@ class BaseDadosCTR {
         
         if($versao >= 1.00){
         
-            $dados = array("dados"=>$motoristaDAO->dados());
+            $dados = array("dados"=>$motoristaDAO->dados($this->base));
             $json_str = json_encode($dados);
 
             return $json_str;
@@ -61,10 +62,9 @@ class BaseDadosCTR {
 
             $dado = $info['dado'];
 
-            $dadosEquip = array("dados" => $equipDAO->dados($dado));
+            $dadosEquip = array("dados" => $equipDAO->dados($dado, $this->base));
             $resEquip = json_encode($dadosEquip);
-
-
+            
             return $resEquip;
         
         }
@@ -79,7 +79,7 @@ class BaseDadosCTR {
         
             $turnoDAO = new TurnoDAO();
 
-            $dados = array("dados"=>$turnoDAO->dados());
+            $dados = array("dados"=>$turnoDAO->dados($this->base));
             $json_str = json_encode($dados);
 
             return $json_str;

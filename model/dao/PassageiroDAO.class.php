@@ -14,7 +14,7 @@ require_once('../model/dao/AjusteDataHoraDAO.class.php');
  */
 class PassageiroDAO extends Conn {
     
-    public function verifPassageiro($passageiro) {
+    public function verifPassageiro($passageiro, $base) {
 
         $select = " SELECT "
                 . " COUNT(*) AS QTDE "
@@ -25,7 +25,7 @@ class PassageiroDAO extends Conn {
                 . " AND "
                 . " MATRIC_COLAB = " . $passageiro->matricColabPassageiro;
 
-        $this->Conn = parent::getConn();
+        $this->Conn = parent::getConn($base);
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -38,7 +38,7 @@ class PassageiroDAO extends Conn {
         return $v;
     }
 
-    public function insPassageiro($passageiro) {
+    public function insPassageiro($passageiro, $base) {
 
         $ajusteDataHoraDAO = new AjusteDataHoraDAO();
 
@@ -54,18 +54,18 @@ class PassageiroDAO extends Conn {
                 . " , DTHR_TRANS "
                 . " ) "
                 . " VALUES ("
-                . " " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrViagemPassageiro)
+                . " " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrViagemPassageiro, $this->base)
                 . " , TO_DATE('" . $passageiro->dthrViagemPassageiro . "','DD/MM/YYYY HH24:MI')"
                 . " , " . $passageiro->idEquipPassageiro
                 . " , " . $passageiro->matricMotoPassageiro
                  . " , " . $passageiro->idTurnoPassageiro
                 . " , " . $passageiro->matricColabPassageiro
-                . " , " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrPassageiro)
+                . " , " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrPassageiro, $this->base)
                 . " , TO_DATE('" . $passageiro->dthrPassageiro . "','DD/MM/YYYY HH24:MI')"
                 . " , SYSDATE "
                 . " )";
 
-        $this->Conn = parent::getConn();
+        $this->Conn = parent::getConn($base);
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
 

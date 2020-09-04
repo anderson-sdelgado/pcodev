@@ -20,7 +20,7 @@ class EquipDAO extends Conn {
     /** @var PDO */
     private $Conn;
 
-    public function dados($equip) {
+    public function dados($equip, $base) {
 
         $select = " SELECT "
                 . " E.EQUIP_ID AS \"idEquip\" "
@@ -33,7 +33,7 @@ class EquipDAO extends Conn {
                 . " WHERE  "
                 . " E.NRO_EQUIP = " . $equip;
 
-        $this->Conn = parent::getConn();
+        $this->Conn = parent::getConn($base);
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
