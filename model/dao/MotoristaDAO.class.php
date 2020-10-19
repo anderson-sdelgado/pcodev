@@ -40,4 +40,24 @@ class MotoristaDAO extends Conn {
         
     }
     
+    public function atual($moto, $base) {
+
+        $select = " SELECT "
+                    . " NRO_CRACHA AS \"matricMoto\" "
+                    . " , FUNC_NOME AS \"nomeMoto\" "
+                . " FROM "
+                    . " USINAS.V_SIMOVA_FUNC"
+                . " WHERE"
+                    . " NRO_CRACHA = " . $moto;
+        
+        $this->Conn = parent::getConn($base);
+        $this->Read = $this->Conn->prepare($select);
+        $this->Read->setFetchMode(PDO::FETCH_ASSOC);
+        $this->Read->execute();
+        $result = $this->Read->fetchAll();
+
+        return $result;
+        
+    }
+    
 }

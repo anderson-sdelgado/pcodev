@@ -54,13 +54,13 @@ class PassageiroDAO extends Conn {
                 . " , DTHR_TRANS "
                 . " ) "
                 . " VALUES ("
-                . " " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrViagemPassageiro, $this->base)
+                . " " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrViagemPassageiro, $base)
                 . " , TO_DATE('" . $passageiro->dthrViagemPassageiro . "','DD/MM/YYYY HH24:MI')"
                 . " , " . $passageiro->idEquipPassageiro
                 . " , " . $passageiro->matricMotoPassageiro
                  . " , " . $passageiro->idTurnoPassageiro
                 . " , " . $passageiro->matricColabPassageiro
-                . " , " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrPassageiro, $this->base)
+                . " , " . $ajusteDataHoraDAO->dataHoraGMT($passageiro->dthrPassageiro, $base)
                 . " , TO_DATE('" . $passageiro->dthrPassageiro . "','DD/MM/YYYY HH24:MI')"
                 . " , SYSDATE "
                 . " )";

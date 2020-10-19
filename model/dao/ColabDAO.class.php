@@ -17,20 +17,29 @@ class ColabDAO extends Conn {
     public function dados($base) {
 
         $select = " SELECT "
-                    . " COLAB.CD AS \"matricColab\" "
-                    . " , CORR.NOME AS \"nomeColab\" "
-                . " FROM " 
-                    . " COLAB COLAB "
-                    . " , CORR CORR "
-                    . " , REG_DEMIS DEM " 
-                . " WHERE "
-                    . " COLAB.CD > 10000 "
-                    . " AND COLAB.CORR_ID = CORR.CORR_ID "
-                    . " AND DEM.COLAB_ID IS NULL " 
-                    . " AND COLAB.COLAB_ID = DEM.COLAB_ID(+) "
-                . " ORDER BY " 
-                    . " COLAB.CD "
-                . " ASC ";
+                    . " MATRIC AS \"matricColab\" "
+                    . " , NOME AS \"nomeColab\" "
+                . " FROM "
+                    . " VIEW_PCO_PASSAGEIRO";
+        
+        $this->Conn = parent::getConn($base);
+        $this->Read = $this->Conn->prepare($select);
+        $this->Read->setFetchMode(PDO::FETCH_ASSOC);
+        $this->Read->execute();
+        $result = $this->Read->fetchAll();
+
+        return $result;
+        
+    }
+    
+    public function atual($colab, $base) {
+
+        $select = " SELECT "
+                    . " MATRIC AS \"matricColab\" "
+                    . " , NOME AS \"nomeColab\" "
+                . " FROM "
+                    . " VIEW_PCO_PASSAGEIRO"
+                . " WHERE MATRIC = " . $colab;
         
         $this->Conn = parent::getConn($base);
         $this->Read = $this->Conn->prepare($select);

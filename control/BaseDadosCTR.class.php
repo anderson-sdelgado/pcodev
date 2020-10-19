@@ -35,6 +35,25 @@ class BaseDadosCTR {
         
     }
     
+    public function atualColab($versao, $info) {
+
+        $versao = str_replace("_", ".", $versao);
+        
+        if($versao >= 1.00){
+        
+            $colabDAO = new ColabDAO();
+
+            $dado = $info['dado'];
+
+            $dadosEquip = array("dados" => $colabDAO->atual($dado, $this->base));
+            $resEquip = json_encode($dadosEquip);
+            
+            return $resEquip;
+        
+        }
+        
+    }
+    
     public function dadosMoto($versao) {
         
         $versao = str_replace("_", ".", $versao);
@@ -47,6 +66,25 @@ class BaseDadosCTR {
             $json_str = json_encode($dados);
 
             return $json_str;
+        
+        }
+        
+    }
+    
+    public function atualMoto($versao, $info) {
+
+        $versao = str_replace("_", ".", $versao);
+        
+        if($versao >= 1.00){
+        
+            $motoristaDAO = new MotoristaDAO();
+
+            $dado = $info['dado'];
+
+            $dadosEquip = array("dados" => $motoristaDAO->atual($dado, $this->base));
+            $resEquip = json_encode($dadosEquip);
+            
+            return $resEquip;
         
         }
         
