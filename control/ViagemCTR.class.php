@@ -5,55 +5,106 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require_once('../model/dao/PassageiroDAO.class.php');
-require_once('../model/dao/LogDAO.class.php');
+require_once('../model/CabecViagemDAO.class.php');
+require_once('../model/PassageiroViagemDAO.class.php');
+require_once('../model/LogDAO.class.php');
 /**
  * Description of PassageiroCTR
  *
  * @author anderson
  */
-class PassageiroCTR {
+class ViagemCTR {
     
     private $base = 2;
     
     public function salvarDados($versao, $info, $pagina) {
 
         $dados = $info['dado'];
-        $pagina = $pagina . '-' . $versao;
-        $this->salvarLog($dados, $pagina);
-
         $versao = str_replace("_", ".", $versao);
-
         
         if ($versao >= 1.00) {
-            
-            $jsonObjPassageiro = json_decode($dados);
-            $dadosPassageiro = $jsonObjPassageiro->passageiro;
-            $ret = $this->salvarPassageiro($dadosPassageiro);
 
-            return $ret;
+            $posicao = strpos($dados, "_") + 1;
+            $cabec = substr($dados, 0, ($posicao - 1));
+            $item = substr($dados, $posicao);
+
+            $jsonObjCabec = json_decode($cabec);
+            $jsonObjItem = json_decode($item);
+
+            $dadosCab = $jsonObjCabec->cabecalho;
+            $dadosPassag = $jsonObjItem->passageiro;
+
+            if($pagina == 'inserircabecaberto'){
+                return $this->salvarCabecAberto($dadosCab, $dadosPassag);
+            }
+            else{
+                return $this->salvarCabecFechado($dadosCab, $dadosPassag);
+            }
+            
         }
     }
     
-    private function salvarPassageiro($dadosPassageiro) {
-        $passageiroDAO = new PassageiroDAO();
-        $idPassagArray = array();
-        foreach ($dadosPassageiro as $passag) {
-            $v = $passageiroDAO->verifPassageiro($passag, $this->base);
+    private function salvarCabecAberto($dadosCabec, $dadosPassag) {
+        
+        $cabecViagemDAO = new CabecViagemDAO();
+        
+        foreach ($dadosCabec as $cabec) {
+            $v = $cabecViagemDAO->verifCabec($cabec, $this->base);
             if ($v == 0) {
-                $passageiroDAO->insPassageiro($passag, $this->base);
+                $cabecViagemDAO->insCabecAberto($cabec, $this->base);
             }
-            $idPassagArray[] = array("idPassageiro" => $passag->idPassageiro);
+            $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
+            $retPassag = $this->salvarPassageiro($idCabecBD, $cabec->idCabecViagem, $dadosPassag);
         }
-        $dadoPassag = array("passageiro"=>$idPassagArray);
+        
+        return 'CABECABERTO_' . $retPassag;
+    }
+    
+    private function salvarCabecFechado($dadosCabec, $dadosPassag) {
+        
+        $cabecViagemDAO = new CabecViagemDAO();
+        $idCabecArray = array();
+        
+        foreach ($dadosCabec as $cabec) {
+            $v = $cabecViagemDAO->verifCabec($cabec, $this->base);
+            if ($v == 0) {
+                $cabecViagemDAO->insCabecFechado($cabec, $this->base);
+                $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
+            } else {
+                $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
+                $cabecViagemDAO->updateCabecFechado($idCabecBD, $cabec, $this->base);
+            }
+            $retPassag = $this->salvarPassageiro($idCabecBD, $cabec->idCabecViagem, $dadosPassag);
+            $idCabecArray[] = array("idCabecViagem" => $cabec->idCabecViagem);
+        }
+        
+        $dadoCabec = array("cabecalho"=>$idCabecArray);
+        $retCabec = json_encode($dadoCabec);
+        return 'CABECFECHADO_' . $retCabec . "|" . $retPassag;
+        
+    }
+    
+    private function salvarPassageiro($idCabecBD, $idCabecCel, $dadosPassag) {
+        
+        $passageiroViagemDAO = new PassageiroViagemDAO();
+        $idPassageiroViagemArray = array();
+        
+        foreach ($dadosPassag as $passag) {
+            if ($idCabecCel == $passag->idCabecPassageiroViagem) {
+                $v = $passageiroViagemDAO->verifPassageiro($idCabecBD, $passag, $this->base);
+                if ($v == 0) {
+                    $passageiroViagemDAO->insPassageiro($idCabecBD, $passag, $this->base);
+                }
+                $passageiroViagemDAO->idPassageiro($idCabecBD, $passag, $this->base);
+                $idPassageiroViagemArray[] = array("idPassageiroViagem" => $passag->idPassageiroViagem, "idCabecPassageiroViagem" => $passag->idCabecPassageiroViagem);
+            }
+        }
+        
+        $dadoPassag = array("passageiro"=>$idPassageiroViagemArray);
         $retPassag = json_encode($dadoPassag);
         
-        return 'SALVOU_' . $retPassag;
+        return $retPassag;
+        
     }
-    
-    private function salvarLog($dados, $pagina) {
-        $logDAO = new LogDAO();
-        $logDAO->salvarDados($dados, $pagina, $this->base);
-    }
-    
+ 
 }

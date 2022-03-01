@@ -20,14 +20,14 @@ class AtualAplicDAO extends Conn {
     /** @var PDO */
     private $Conn;
 
-    public function verAtual($equip, $base) {
+    public function verAtual($nroAparelho, $base) {
 
         $select = "SELECT "
                 . " COUNT(*) AS QTDE "
                 . " FROM "
                 . " PCO_ATUALIZACAO "
                 . " WHERE "
-                . " NRO_EQUIP = " . $equip;
+                . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn($base);
         $this->Read = $this->Conn->prepare($select);
@@ -42,16 +42,16 @@ class AtualAplicDAO extends Conn {
         return $v;
     }
 
-    public function insAtual($equip, $va, $base) {
+    public function insAtual($nroAparelho, $va, $base) {
 
         $sql = "INSERT INTO PCO_ATUALIZACAO ("
-                . " NRO_EQUIP "
+                . " NRO_APARELHO "
                 . " , VERSAO_ATUAL "
                 . " , VERSAO_NOVA "
                 . " , DTHR_ULT_ATUAL "
                 . " ) "
                 . " VALUES ("
-                . " " . $equip
+                . " " . $nroAparelho
                 . " , TRIM(TO_CHAR(" . $va . ", '99999999D99')) "
                 . " , TRIM(TO_CHAR(" . $va . ", '99999999D99')) "
                 . " , SYSDATE "
@@ -62,7 +62,7 @@ class AtualAplicDAO extends Conn {
         $this->Create->execute();
     }
 
-    public function retAtual($equip, $base) {
+    public function retAtual($nroAparelho, $base) {
 
         $select = " SELECT "
                 . " VERSAO_NOVA"
@@ -70,7 +70,7 @@ class AtualAplicDAO extends Conn {
                 . " FROM "
                 . " PCO_ATUALIZACAO "
                 . " WHERE "
-                . " NRO_EQUIP = " . $equip;
+                . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn($base);
         $this->Read = $this->Conn->prepare($select);
@@ -81,7 +81,7 @@ class AtualAplicDAO extends Conn {
         return $result;
     }
 
-    public function updAtualNova($equip, $va, $base) {
+    public function updAtualNova($nroAparelho, $va, $base) {
 
         $sql = "UPDATE PCO_ATUALIZACAO "
                 . " SET "
@@ -89,21 +89,21 @@ class AtualAplicDAO extends Conn {
                 . " , VERSAO_NOVA = TRIM(TO_CHAR(" . $va . ", '99999999D99'))"
                 . " , DTHR_ULT_ATUAL = SYSDATE "
                 . " WHERE "
-                . " NRO_EQUIP = " . $equip;
+                . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn($base);
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
     }
 
-    public function updAtual($equip, $va, $base) {
+    public function updAtual($nroAparelho, $va, $base) {
 
         $sql = "UPDATE PCO_ATUALIZACAO "
                 . " SET "
                 . " VERSAO_ATUAL = TRIM(TO_CHAR(" . $va . ", '99999999D99'))"
                 . " , DTHR_ULT_ATUAL = SYSDATE "
                 . " WHERE "
-                . " NRO_EQUIP = " . $equip;
+                . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn($base);
         $this->Create = $this->Conn->prepare($sql);

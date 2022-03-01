@@ -5,10 +5,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require_once('../model/dao/ColabDAO.class.php');
-require_once('../model/dao/MotoristaDAO.class.php');
-require_once('../model/dao/EquipDAO.class.php');
-require_once('../model/dao/TurnoDAO.class.php');
+require_once('../model/ColabDAO.class.php');
+require_once('../model/MotoristaDAO.class.php');
+require_once('../model/EquipDAO.class.php');
+require_once('../model/TrajetoDAO.class.php');
+require_once('../model/TurnoDAO.class.php');
 /**
  * Description of BaseDadosCTR
  *
@@ -16,7 +17,8 @@ require_once('../model/dao/TurnoDAO.class.php');
  */
 class BaseDadosCTR {
     
-    private $base = 1;
+    private $base = 2;
+    private $baseApex = 3;
 
     public function dadosColab($versao) {
         
@@ -90,7 +92,7 @@ class BaseDadosCTR {
         
     }
     
-    public function dadosEquip($versao, $info) {
+    public function dadosEquip($versao) {
 
         $versao = str_replace("_", ".", $versao);
         
@@ -98,12 +100,27 @@ class BaseDadosCTR {
         
             $equipDAO = new EquipDAO();
 
-            $dado = $info['dado'];
-
-            $dadosEquip = array("dados" => $equipDAO->dados($dado, $this->base));
+            $dadosEquip = array("dados" => $equipDAO->dados($this->baseApex));
             $resEquip = json_encode($dadosEquip);
             
             return $resEquip;
+        
+        }
+        
+    }
+        
+    public function dadosTrajeto($versao) {
+
+        $versao = str_replace("_", ".", $versao);
+        
+        if($versao >= 1.00){
+        
+            $trajetoDAO = new TrajetoDAO();
+
+            $dados = array("dados"=>$trajetoDAO->dados($this->baseApex));
+            $json_str = json_encode($dados);
+
+            return $json_str;
         
         }
         
