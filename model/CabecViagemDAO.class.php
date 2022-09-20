@@ -14,7 +14,7 @@ class CabecViagemDAO extends Conn {
     //put your code here
     
 
-    public function verifCabec($cabec, $base) {
+    public function verifCabec($cabec) {
 
         $select = " SELECT "
                         . " COUNT(*) AS QTDE "
@@ -25,7 +25,7 @@ class CabecViagemDAO extends Conn {
                         . " AND "
                         . " EQUIP_ID = " . $cabec->idEquipCabecViagem . " ";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -38,7 +38,7 @@ class CabecViagemDAO extends Conn {
         return $v;
     }
 
-    public function idCabec($cabec, $base) {
+    public function idCabec($cabec) {
 
         $select = " SELECT "
                         . " ID AS ID "
@@ -49,7 +49,7 @@ class CabecViagemDAO extends Conn {
                         . " AND "
                         . " EQUIP_ID = " . $cabec->idEquipCabecViagem . " ";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -64,7 +64,7 @@ class CabecViagemDAO extends Conn {
         return $id;
     }
 
-    public function insCabecAberto($cabec, $base) {
+    public function insCabecAberto($cabec) {
 
         if ($cabec->hodometroInicialCabecViagem > 9999999) {
             $cabec->hodometroInicialCabecViagem = 0;
@@ -93,12 +93,12 @@ class CabecViagemDAO extends Conn {
                         . " , 1 "
                     . " )";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
     }
 
-    public function insCabecFechado($cabec, $base) {
+    public function insCabecFechado($cabec) {
 
         if ($cabec->hodometroInicialCabecViagem > 9999999) {
             $cabec->hodometroInicialCabecViagem = 0;
@@ -133,12 +133,12 @@ class CabecViagemDAO extends Conn {
                         . " , 2 "
                     . " )";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
     }
 
-    public function updateCabecFechado($idCabec, $cabec, $base) {
+    public function updateCabecFechado($idCabec, $cabec) {
 
         if ($cabec->hodometroFinalCabecViagem > 9999999) {
             $cabec->hodometroFinalCabecViagem = 0;
@@ -151,7 +151,7 @@ class CabecViagemDAO extends Conn {
                     . " WHERE "
                         . " ID = " . $idCabec;
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
     }

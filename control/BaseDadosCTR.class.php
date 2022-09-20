@@ -17,129 +17,88 @@ require_once('../model/TurnoDAO.class.php');
  */
 class BaseDadosCTR {
     
-    private $base = 2;
-    private $baseApex = 3;
+//    private $base = 2;
+//    private $baseApex = 3;
 
-    public function dadosColab($versao) {
+    public function dadosColab() {
+
+        $colabDAO = new ColabDAO();
+
+        $dados = array("dados"=>$colabDAO->dados());
+        $json_str = json_encode($dados);
+
+        return $json_str;
         
-        $versao = str_replace("_", ".", $versao);
+    }
+    
+    public function atualColab($info) {
+
+        $dado = $info['dado'];
         
         $colabDAO = new ColabDAO();
-        
-        if($versao >= 1.00){
-        
-            $dados = array("dados"=>$colabDAO->dados($this->base));
-            $json_str = json_encode($dados);
 
-            return $json_str;
+        $dadosEquip = array("dados" => $colabDAO->atual($dado));
+        $resEquip = json_encode($dadosEquip);
+
+        return $resEquip;
+
+    }
+    
+    public function dadosMoto() {
+
+        $motoristaDAO = new MotoristaDAO();
+
+        $dados = array("dados"=>$motoristaDAO->dados());
+        $json_str = json_encode($dados);
+
+        return $json_str;
         
-        }
         
     }
     
-    public function atualColab($versao, $info) {
+    public function atualMoto($info) {
 
-        $versao = str_replace("_", ".", $versao);
-        
-        if($versao >= 1.00){
-        
-            $colabDAO = new ColabDAO();
-
-            $dado = $info['dado'];
-
-            $dadosEquip = array("dados" => $colabDAO->atual($dado, $this->base));
-            $resEquip = json_encode($dadosEquip);
-            
-            return $resEquip;
-        
-        }
-        
-    }
-    
-    public function dadosMoto($versao) {
-        
-        $versao = str_replace("_", ".", $versao);
+        $dado = $info['dado'];
         
         $motoristaDAO = new MotoristaDAO();
-        
-        if($versao >= 1.00){
-        
-            $dados = array("dados"=>$motoristaDAO->dados($this->base));
-            $json_str = json_encode($dados);
 
-            return $json_str;
-        
-        }
+        $dadosEquip = array("dados" => $motoristaDAO->atual($dado));
+        $resEquip = json_encode($dadosEquip);
+
+        return $resEquip;
         
     }
     
-    public function atualMoto($versao, $info) {
+    public function dadosEquip() {
 
-        $versao = str_replace("_", ".", $versao);
-        
-        if($versao >= 1.00){
-        
-            $motoristaDAO = new MotoristaDAO();
+        $equipDAO = new EquipDAO();
 
-            $dado = $info['dado'];
+        $dadosEquip = array("dados" => $equipDAO->dados());
+        $resEquip = json_encode($dadosEquip);
 
-            $dadosEquip = array("dados" => $motoristaDAO->atual($dado, $this->base));
-            $resEquip = json_encode($dadosEquip);
-            
-            return $resEquip;
+        return $resEquip;
         
-        }
+    }
+        
+    public function dadosTrajeto() {
+
+        $trajetoDAO = new TrajetoDAO();
+
+        $dados = array("dados"=>$trajetoDAO->dados());
+        $json_str = json_encode($dados);
+
+        return $json_str;
         
     }
     
-    public function dadosEquip($versao) {
+    public function dadosTurno() {
 
-        $versao = str_replace("_", ".", $versao);
-        
-        if($versao >= 1.00){
-        
-            $equipDAO = new EquipDAO();
+        $turnoDAO = new TurnoDAO();
 
-            $dadosEquip = array("dados" => $equipDAO->dados($this->baseApex));
-            $resEquip = json_encode($dadosEquip);
-            
-            return $resEquip;
-        
-        }
-        
-    }
-        
-    public function dadosTrajeto($versao) {
+        $dados = array("dados"=>$turnoDAO->dados());
+        $json_str = json_encode($dados);
 
-        $versao = str_replace("_", ".", $versao);
-        
-        if($versao >= 1.00){
-        
-            $trajetoDAO = new TrajetoDAO();
-
-            $dados = array("dados"=>$trajetoDAO->dados($this->baseApex));
-            $json_str = json_encode($dados);
-
-            return $json_str;
-        
-        }
-        
-    }
-    
-    public function dadosTurno($versao) {
-
-        $versao = str_replace("_", ".", $versao);
-        
-        if($versao >= 1.00){
-        
-            $turnoDAO = new TurnoDAO();
-
-            $dados = array("dados"=>$turnoDAO->dados($this->base));
-            $json_str = json_encode($dados);
-
-            return $json_str;
-        
-        }
+        return $json_str;
         
     }
     

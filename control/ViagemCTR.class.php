@@ -7,7 +7,6 @@
  */
 require_once('../model/CabecViagemDAO.class.php');
 require_once('../model/PassageiroViagemDAO.class.php');
-require_once('../model/LogDAO.class.php');
 /**
  * Description of PassageiroCTR
  *
@@ -15,45 +14,54 @@ require_once('../model/LogDAO.class.php');
  */
 class ViagemCTR {
     
-    private $base = 2;
     
-    public function salvarDados($versao, $info, $pagina) {
+    public function salvarDadosCabecAberto($info) {
 
         $dados = $info['dado'];
-        $versao = str_replace("_", ".", $versao);
-        
-        if ($versao >= 1.00) {
 
-            $posicao = strpos($dados, "_") + 1;
-            $cabec = substr($dados, 0, ($posicao - 1));
-            $item = substr($dados, $posicao);
+        $posicao = strpos($dados, "_") + 1;
+        $cabec = substr($dados, 0, ($posicao - 1));
+        $item = substr($dados, $posicao);
 
-            $jsonObjCabec = json_decode($cabec);
-            $jsonObjItem = json_decode($item);
+        $jsonObjCabec = json_decode($cabec);
+        $jsonObjItem = json_decode($item);
 
-            $dadosCab = $jsonObjCabec->cabecalho;
-            $dadosPassag = $jsonObjItem->passageiro;
+        $dadosCab = $jsonObjCabec->cabecalho;
+        $dadosPassag = $jsonObjItem->passageiro;
 
-            if($pagina == 'inserircabecaberto'){
-                return $this->salvarCabecAberto($dadosCab, $dadosPassag);
-            }
-            else{
-                return $this->salvarCabecFechado($dadosCab, $dadosPassag);
-            }
-            
-        }
+        return $this->salvarCabecAberto($dadosCab, $dadosPassag);
+ 
     }
+    
+      public function salvarDadosCabecFechado($info) {
+
+        $dados = $info['dado'];
+
+        $posicao = strpos($dados, "_") + 1;
+        $cabec = substr($dados, 0, ($posicao - 1));
+        $item = substr($dados, $posicao);
+
+        $jsonObjCabec = json_decode($cabec);
+        $jsonObjItem = json_decode($item);
+
+        $dadosCab = $jsonObjCabec->cabecalho;
+        $dadosPassag = $jsonObjItem->passageiro;
+
+        return $this->salvarCabecFechado($dadosCab, $dadosPassag);
+
+    }
+    
     
     private function salvarCabecAberto($dadosCabec, $dadosPassag) {
         
         $cabecViagemDAO = new CabecViagemDAO();
         
         foreach ($dadosCabec as $cabec) {
-            $v = $cabecViagemDAO->verifCabec($cabec, $this->base);
+            $v = $cabecViagemDAO->verifCabec($cabec);
             if ($v == 0) {
-                $cabecViagemDAO->insCabecAberto($cabec, $this->base);
+                $cabecViagemDAO->insCabecAberto($cabec);
             }
-            $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
+            $idCabecBD = $cabecViagemDAO->idCabec($cabec);
             $retPassag = $this->salvarPassageiro($idCabecBD, $cabec->idCabecViagem, $dadosPassag);
         }
         
@@ -66,13 +74,13 @@ class ViagemCTR {
         $idCabecArray = array();
         
         foreach ($dadosCabec as $cabec) {
-            $v = $cabecViagemDAO->verifCabec($cabec, $this->base);
+            $v = $cabecViagemDAO->verifCabec($cabec);
             if ($v == 0) {
-                $cabecViagemDAO->insCabecFechado($cabec, $this->base);
-                $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
+                $cabecViagemDAO->insCabecFechado($cabec);
+                $idCabecBD = $cabecViagemDAO->idCabec($cabec);
             } else {
-                $idCabecBD = $cabecViagemDAO->idCabec($cabec, $this->base);
-                $cabecViagemDAO->updateCabecFechado($idCabecBD, $cabec, $this->base);
+                $idCabecBD = $cabecViagemDAO->idCabec($cabec);
+                $cabecViagemDAO->updateCabecFechado($idCabecBD, $cabec);
             }
             $retPassag = $this->salvarPassageiro($idCabecBD, $cabec->idCabecViagem, $dadosPassag);
             $idCabecArray[] = array("idCabecViagem" => $cabec->idCabecViagem);
@@ -91,11 +99,11 @@ class ViagemCTR {
         
         foreach ($dadosPassag as $passag) {
             if ($idCabecCel == $passag->idCabecPassageiroViagem) {
-                $v = $passageiroViagemDAO->verifPassageiro($idCabecBD, $passag, $this->base);
+                $v = $passageiroViagemDAO->verifPassageiro($idCabecBD, $passag);
                 if ($v == 0) {
-                    $passageiroViagemDAO->insPassageiro($idCabecBD, $passag, $this->base);
+                    $passageiroViagemDAO->insPassageiro($idCabecBD, $passag);
                 }
-                $passageiroViagemDAO->idPassageiro($idCabecBD, $passag, $this->base);
+                $passageiroViagemDAO->idPassageiro($idCabecBD, $passag);
                 $idPassageiroViagemArray[] = array("idPassageiroViagem" => $passag->idPassageiroViagem, "idCabecPassageiroViagem" => $passag->idCabecPassageiroViagem);
             }
         }

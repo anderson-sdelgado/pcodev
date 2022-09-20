@@ -5,13 +5,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-require_once('../dbutil/Conn.class.php');
+require_once('../dbutil/ConnApex.class.php');
 /**
  * Description of TurnoDAO
  *
  * @author anderson
  */
-class TurnoDAO extends Conn {
+class TurnoDAO extends ConnApex {
     //put your code here
 
     /** @var PDOStatement */
@@ -20,17 +20,27 @@ class TurnoDAO extends Conn {
     /** @var PDO */
     private $Conn;
 
-    public function dados($base) {
+    public function dados() {
 
         $select = " SELECT "
-                . " TURNOTRAB_ID AS \"idTurno\" "
-                . " , TPTUREQUIP_CD AS \"codTurno\" "
-                . " , NRO_TURNO AS \"nroTurno\" "
-                . " , 'TURNO ' || NRO_TURNO || ': ' || HR_INI || ' - ' || HR_FIM AS \"descTurno\" "
-                . " FROM "
-                . " USINAS.V_SIMOVA_TURNO_EQUIP_NEW ";
+                        . " RJT.ID AS \"idRJornadaTurno\" "
+                        . " , J.ID AS \"idJornada\" "
+                        . " , T.ID AS \"idTurno\" "
+                        . " , T.NRO AS \"nroTurno\" "
+                        . " , 'TURNO ' || T.NRO || ': ' || T.HORARIO_INIC || ' - ' || T.HORARIO_FIM AS \"descTurno\" "
+                    . " FROM "
+                        . " PCO_JORNADA J "
+                        . " , PCO_R_JORNADA_TURNO RJT "
+                        . " , PCO_TURNO T "
+                    . " WHERE "
+                        . " J.ID = RJT.JORNADA_ID "
+                        . " AND "
+                        . " RJT.TURNO_ID = T.ID "
+                    . " ORDER BY "
+                        . " T.NRO "
+                    . " ASC";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();

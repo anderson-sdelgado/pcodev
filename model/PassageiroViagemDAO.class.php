@@ -14,7 +14,7 @@ class PassageiroViagemDAO extends Conn {
     //put your code here
     
 
-    public function verifPassageiro($idPassag, $passag, $base) {
+    public function verifPassageiro($idPassag, $passag) {
 
         $select = " SELECT "
                     . " COUNT(*) AS QTDE "
@@ -25,7 +25,7 @@ class PassageiroViagemDAO extends Conn {
                     . " AND "
                     . " CABEC_ID = " . $idPassag;
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -38,7 +38,7 @@ class PassageiroViagemDAO extends Conn {
         return $v;
     }
     
-        public function idPassageiro($idPassag, $passag, $base) {
+        public function idPassageiro($idPassag, $passag) {
 
         $select = " SELECT "
                     . " ID "
@@ -49,7 +49,7 @@ class PassageiroViagemDAO extends Conn {
                     . " AND "
                     . " CABEC_ID = " . $idPassag;
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -62,7 +62,7 @@ class PassageiroViagemDAO extends Conn {
         return $id;
     }
     
-    public function insPassageiro($idCabec, $passag, $base) {
+    public function insPassageiro($idCabec, $passag) {
 
         $sql = "INSERT INTO PCO_PASSAG_VIAGEM ("
                 . " CABEC_ID "
@@ -81,7 +81,7 @@ class PassageiroViagemDAO extends Conn {
                 . " , " . $passag->idPassageiroViagem
                 . " )";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
 

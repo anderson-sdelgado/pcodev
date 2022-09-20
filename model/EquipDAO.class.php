@@ -20,36 +20,32 @@ class EquipDAO extends ConnApex {
     /** @var PDO */
     private $Conn;
 
-    public function dados($base) {
+    public function dados() {
 
         $select = " SELECT "
                         . " E.EQUIP_ID AS \"idEquip\" "
                         . " , E.NRO_EQUIP AS \"nroEquip\" "
                         . " , E.CLASSOPER_CD AS \"codClasseEquip\" "
                         . " , CARACTER(E.CLASSOPER_DESCR) AS \"descrClasseEquip\" "
-                        . " , E.TPTUREQUIP_CD AS \"codTurno\""
-                        . " , 1 AS \"tipoEquip\""
-                    . " FROM "
-                        . " V_EQUIP_AGRIC E "
-                    . " WHERE "
-                        . " E.CLASSOPER_CD = 27 "
-                        . " AND "
-                        . " E.MODELEQUIP_ID != 952 "
-                    . " UNION "
-                    . " SELECT "
-                        . " E.EQUIP_ID AS \"idEquip\" "
-                        . " , E.NRO_EQUIP AS \"nroEquip\" "
-                        . " , E.CLASSOPER_CD AS \"codClasseEquip\" "
-                        . " , CARACTER(E.CLASSOPER_DESCR) AS \"descrClasseEquip\" "
-                        . " , E.TPTUREQUIP_CD AS \"codTurno\" "
-                        . " , 2 AS \"tipoEquip\""
+                        . " , RJE.JORNADA_ID AS \"idJornada\""
+                        . " , DECODE(O.EQUIP_ID, null, 1, 2) AS \"tipoEquip\""
                     . " FROM "
                         . " V_EQUIP_AGRIC E "
                         . " , STAFE.PCO_ONIBUS_TERCEIRO O "
+                        . " , PCO_R_JORNADA_EQUIP RJE "
                     . " WHERE "
-                        . " E.EQUIP_ID = O.EQUIP_ID ";
+                        . " E.CLASSOPER_CD = 27 "
+                        . " AND "
+                        . " (E.MODELEQUIP_ID != 952 OR O.EQUIP_ID IS NOT NULL) "
+                        . " AND "
+                        . " E.EQUIP_ID = O.EQUIP_ID(+) "
+                        . " AND "
+                        . " RJE.EQUIP_ID = E.EQUIP_ID "
+                    . " ORDER BY "
+                        . " E.NRO_EQUIP "
+                    . " ASC ";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();

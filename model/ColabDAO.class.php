@@ -14,7 +14,7 @@ require_once('../dbutil/Conn.class.php');
 class ColabDAO extends Conn {
     //put your code here
     
-    public function dados($base) {
+    public function dados() {
 
         $select = " SELECT "
                     . " MATRIC AS \"matricColab\" "
@@ -22,7 +22,7 @@ class ColabDAO extends Conn {
                 . " FROM "
                     . " VIEW_PCO_PASSAGEIRO";
         
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -32,7 +32,7 @@ class ColabDAO extends Conn {
         
     }
     
-    public function atual($colab, $base) {
+    public function atual($colab) {
 
         $select = " SELECT "
                     . " MATRIC AS \"matricColab\" "
@@ -41,7 +41,7 @@ class ColabDAO extends Conn {
                     . " VIEW_PCO_PASSAGEIRO"
                 . " WHERE MATRIC = " . $colab;
         
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();

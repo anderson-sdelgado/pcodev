@@ -14,57 +14,48 @@ require_once('../model/AtualAplicDAO.class.php');
 class AtualAplicCTR {
     //put your code here
     
-    private $base = 2;
-    
-    public function atualAplic($versao, $info) {
+    public function atualAplic($info) {
 
-        $versao = str_replace("_", ".", $versao);
-        $retorno = '';
-        
-        if($versao >= 1.00){
+        $atualAplicDAO = new AtualAplicDAO();
 
-            $atualAplicDAO = new AtualAplicDAO();
+        $jsonObj = json_decode($info['dado']);
+        $dados = $jsonObj->dados;
 
-            $jsonObj = json_decode($info['dado']);
-            $dados = $jsonObj->dados;
+        foreach ($dados as $d) {
+            $nroAparelho = $d->nroAparelhoAtual;
+            $versaoAtual = $d->versaoAtual;
+        }
 
-            foreach ($dados as $d) {
-                $nroAparelho = $d->nroAparelhoAtual;
-                $versaoAtual = $d->versaoAtual;
+        $retAtualApp = 0;
+
+        $v = $atualAplicDAO->verAtual($nroAparelho);
+        if ($v == 0) {
+            $atualAplicDAO->insAtual($nroAparelho, $versaoAtual);
+        } else {
+            $result = $atualAplicDAO->retAtual($nroAparelho);
+            foreach ($result as $item) {
+                $versaoNova = $item['VERSAO_NOVA'];
+                $versaoAtualBD = $item['VERSAO_ATUAL'];
             }
-            
-            $retAtualApp = 0;
-            
-            $v = $atualAplicDAO->verAtual($nroAparelho, $this->base);
-            if ($v == 0) {
-                $atualAplicDAO->insAtual($nroAparelho, $versaoAtual, $this->base);
+            if ($versaoAtual != $versaoAtualBD) {
+                $atualAplicDAO->updAtualNova($nroAparelho, $versaoAtual);
             } else {
-                $result = $atualAplicDAO->retAtual($nroAparelho, $this->base);
-                foreach ($result as $item) {
-                    $versaoNova = $item['VERSAO_NOVA'];
-                    $versaoAtualBD = $item['VERSAO_ATUAL'];
-                }
-                if ($versaoAtual != $versaoAtualBD) {
-                    $atualAplicDAO->updAtualNova($nroAparelho, $versaoAtual, $this->base);
+                if ($versaoAtual != $versaoNova) {
+                    $retAtualApp = 1;
                 } else {
-                    if ($versaoAtual != $versaoNova) {
-                        $retAtualApp = 1;
-                    } else {
-                        if (strcmp($versaoAtual, $versaoAtualBD) <> 0) {
-                            $atualAplicDAO->updAtual($nroAparelho, $versaoAtual, $this->base);
-                        }
+                    if (strcmp($versaoAtual, $versaoAtualBD) <> 0) {
+                        $atualAplicDAO->updAtual($nroAparelho, $versaoAtual);
                     }
                 }
             }
-            $dthr = $atualAplicDAO->dataHora($this->base);
-            
-            $dado = array("flagAtualApp" => $retAtualApp
-                , "dthr" => $dthr);
-
-            $retorno = json_encode(array("dados" => array($dado)));
-            
         }
-        
+        $dthr = $atualAplicDAO->dataHora();
+
+        $dado = array("flagAtualApp" => $retAtualApp
+            , "dthr" => $dthr);
+
+        $retorno = json_encode(array("dados" => array($dado)));
+
         return $retorno;
         
     }

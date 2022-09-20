@@ -19,7 +19,7 @@ class MotoristaDAO extends Conn {
     /** @var PDO */
     private $Conn;
 
-    public function dados($base) {
+    public function dados() {
 
         $select = " SELECT "
                     . " NRO_CRACHA AS \"matricMoto\" "
@@ -30,7 +30,7 @@ class MotoristaDAO extends Conn {
                     . " NRO_CRACHA "
                 . " ASC ";
         
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
@@ -40,7 +40,7 @@ class MotoristaDAO extends Conn {
         
     }
     
-    public function atual($moto, $base) {
+    public function atual($moto) {
 
         $select = " SELECT "
                     . " NRO_CRACHA AS \"matricMoto\" "
@@ -50,7 +50,7 @@ class MotoristaDAO extends Conn {
                 . " WHERE"
                     . " NRO_CRACHA = " . $moto;
         
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();

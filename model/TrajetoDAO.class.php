@@ -20,7 +20,7 @@ class TrajetoDAO extends ConnApex {
     /** @var PDO */
     private $Conn;
 
-    public function dados($base) {
+    public function dados() {
 
         $select = " SELECT "
                         . " ID AS \"idTrajeto\" "
@@ -28,7 +28,7 @@ class TrajetoDAO extends ConnApex {
                     . " FROM "
                         . " PCO_TRAJETO ";
 
-        $this->Conn = parent::getConn($base);
+        $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
         $this->Read->setFetchMode(PDO::FETCH_ASSOC);
         $this->Read->execute();
