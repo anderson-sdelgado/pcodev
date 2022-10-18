@@ -32,7 +32,7 @@ class TurnoDAO extends ConnApex {
                         . " PCO_JORNADA J "
                         . " , PCO_R_JORNADA_TURNO RJT "
                         . " , PCO_TURNO T "
-                    . " WHERE "
+                    . " WHERE"
                         . " J.ID = RJT.JORNADA_ID "
                         . " AND "
                         . " RJT.TURNO_ID = T.ID "

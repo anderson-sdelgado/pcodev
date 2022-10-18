@@ -71,6 +71,7 @@ class PassageiroViagemDAO extends Conn {
                 . " , DTHR_CEL "
                 . " , DTHR_TRANS "
                 . " , ID_CEL "
+                . " , TIPO "
                 . " ) "
                 . " VALUES ("
                 . " " . $idCabec
@@ -79,6 +80,7 @@ class PassageiroViagemDAO extends Conn {
                 . " , TO_DATE('" . $passag->dthrPassageiroViagem . "','DD/MM/YYYY HH24:MI')"
                 . " , SYSDATE "
                 . " , " . $passag->idPassageiroViagem
+                . " , " . $passag->tipoPassageiroViagem
                 . " )";
 
         $this->Conn = parent::getConn();

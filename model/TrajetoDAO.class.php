@@ -26,7 +26,8 @@ class TrajetoDAO extends ConnApex {
                         . " ID AS \"idTrajeto\" "
                         . " , DESCR AS \"descrTrajeto\" "
                     . " FROM "
-                        . " PCO_TRAJETO ";
+                        . " PCO_TRAJETO"
+                    . " ORDER BY DESCR ASC ";
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);

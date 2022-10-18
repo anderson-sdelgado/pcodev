@@ -21,9 +21,9 @@ class CabecViagemDAO extends Conn {
                     . " FROM "
                         . " PCO_CABEC_VIAGEM "
                     . " WHERE "
-                        . " DTHR_CEL = TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
+                        . " DTHR_INICIAL_CEL = TO_DATE('" . $cabec->dthrInicialCabecViagem . "','DD/MM/YYYY HH24:MI')"
                         . " AND "
-                        . " EQUIP_ID = " . $cabec->idEquipCabecViagem . " ";
+                        . " EQUIP_NRO = " . $cabec->nroEquipCabecViagem;
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
@@ -45,9 +45,9 @@ class CabecViagemDAO extends Conn {
                     . " FROM "
                         . " PCO_CABEC_VIAGEM "
                     . " WHERE "
-                        . " DTHR_CEL = TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
+                        . " DTHR_INICIAL_CEL = TO_DATE('" . $cabec->dthrInicialCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
                         . " AND "
-                        . " EQUIP_ID = " . $cabec->idEquipCabecViagem . " ";
+                        . " EQUIP_NRO = " . $cabec->nroEquipCabecViagem;
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
@@ -66,30 +66,40 @@ class CabecViagemDAO extends Conn {
 
     public function insCabecAberto($cabec) {
 
+        if ($cabec->idTrajetoCabecViagem == 0) {
+            $cabec->idTrajetoCabecViagem = 'null';
+        }
+        
+        if ($cabec->descrTrajetoCabecViagem != 'null') {
+            $cabec->descrTrajetoCabecViagem = "'" . str_replace(array("#", "'", ";", "*", "%", "$", "@", "!", "{", "}", "[", "]", "(", ")"), '', $cabec->descrTrajetoCabecViagem) . "'";
+        }
+        
         if ($cabec->hodometroInicialCabecViagem > 9999999) {
             $cabec->hodometroInicialCabecViagem = 0;
         }
 
         $sql = "INSERT INTO PCO_CABEC_VIAGEM ("
-                        . " DTHR "
-                        . " , DTHR_CEL "
-                        . " , DTHR_TRANS "
-                        . " , EQUIP_ID "
+                        . " DTHR_INICIAL "
+                        . " , DTHR_INICIAL_CEL "
+                        . " , DTHR_INICIAL_TRANS "
+                        . " , EQUIP_NRO "
                         . " , MATRIC_MOTORISTA "
                         . " , TURNO_ID "
                         . " , TRAJETO_ID "
                         . " , HOD_HOR_INICIAL "
+                        . " , TRAJETO_DESCR "
                         . " , STATUS "
                     . " ) "
                     . " VALUES ("
-                        . " TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
-                        . " , TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
+                        . " TO_DATE('" . $cabec->dthrInicialCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
+                        . " , TO_DATE('" . $cabec->dthrInicialCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
                         . " , SYSDATE "
-                        . " , " . $cabec->idEquipCabecViagem
+                        . " , " . $cabec->nroEquipCabecViagem
                         . " , " . $cabec->matricMotoCabecViagem
                         . " , " . $cabec->idTurnoCabecViagem
                         . " , " . $cabec->idTrajetoCabecViagem
                         . " , " . $cabec->hodometroInicialCabecViagem
+                        . " , " . $cabec->descrTrajetoCabecViagem
                         . " , 1 "
                     . " )";
 
@@ -100,6 +110,14 @@ class CabecViagemDAO extends Conn {
 
     public function insCabecFechado($cabec) {
 
+        if ($cabec->idTrajetoCabecViagem == 0) {
+            $cabec->idTrajetoCabecViagem = 'null';
+        }
+        
+        if ($cabec->descrTrajetoCabecViagem != 'null') {
+            $cabec->descrTrajetoCabecViagem = "'" . str_replace(array("#", "'", ";", "*", "%", "$", "@", "!", "{", "}", "[", "]", "(", ")"), '', $cabec->descrTrajetoCabecViagem) . "'";
+        }
+        
         if ($cabec->hodometroInicialCabecViagem > 9999999) {
             $cabec->hodometroInicialCabecViagem = 0;
         }
@@ -109,27 +127,35 @@ class CabecViagemDAO extends Conn {
         }
 
         $sql = "INSERT INTO PCO_CABEC_VIAGEM ("
-                        . " DTHR "
-                        . " , DTHR_CEL "
-                        . " , DTHR_TRANS "
-                        . " , EQUIP_ID "
+                        . " DTHR_INICIAL "
+                        . " , DTHR_INICIAL_CEL "
+                        . " , DTHR_INICIAL_TRANS "
+                        . " , EQUIP_NRO "
                         . " , MATRIC_MOTORISTA "
                         . " , TURNO_ID "
                         . " , TRAJETO_ID "
                         . " , HOD_HOR_INICIAL "
                         . " , HOD_HOR_FINAL "
+                        . " , TRAJETO_DESCR "
+                        . " , DTHR_FINAL "
+                        . " , DTHR_FINAL_CEL "
+                        . " , DTHR_FINAL_TRANS "
                         . " , STATUS "
                     . " ) "
                     . " VALUES ("
-                        . " TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
-                        . " , TO_DATE('" . $cabec->dthrCabecViagem . "','DD/MM/YYYY HH24:MI')"
+                        . " TO_DATE('" . $cabec->dthrInicialCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
+                        . " , TO_DATE('" . $cabec->dthrInicialCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
                         . " , SYSDATE "
-                        . " , " . $cabec->idEquipCabecViagem
+                        . " , " . $cabec->nroEquipCabecViagem
                         . " , " . $cabec->matricMotoCabecViagem
                         . " , " . $cabec->idTurnoCabecViagem
                         . " , " . $cabec->idTrajetoCabecViagem
                         . " , " . $cabec->hodometroInicialCabecViagem
                         . " , " . $cabec->hodometroFinalCabecViagem
+                        . " , " . $cabec->descrTrajetoCabecViagem
+                        . " , TO_DATE('" . $cabec->dthrFinalCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
+                        . " , TO_DATE('" . $cabec->dthrFinalCabecViagem . "' , 'DD/MM/YYYY HH24:MI')"
+                        . " , SYSDATE "
                         . " , 2 "
                     . " )";
 
@@ -147,6 +173,9 @@ class CabecViagemDAO extends Conn {
         $sql = "UPDATE PCO_CABEC_VIAGEM "
                     . " SET "
                         . " HOD_HOR_FINAL = " . $cabec->hodometroFinalCabecViagem
+                        . " , DTHR_FINAL = TO_DATE('" . $cabec->dthrFinalCabecViagem . "' , 'DD/MM/YYYY HH24:MI') "
+                        . " , DTHR_FINAL_CEL = TO_DATE('" . $cabec->dthrFinalCabecViagem . "' , 'DD/MM/YYYY HH24:MI') "
+                        . " , DTHR_FINAL_TRANS = SYSDATE "
                         . " , STATUS = 2 "
                     . " WHERE "
                         . " ID = " . $idCabec;
