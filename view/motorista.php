@@ -7,6 +7,6 @@ require_once('../control/BaseDadosCTR.class.php');
 if (isset($info)):
 
     $baseDadosCTR = new BaseDadosCTR();
-    echo $retorno = $baseDadosCTR->dadosEquip($info);
+    echo $baseDadosCTR->dadosMoto($info);
     
 endif;

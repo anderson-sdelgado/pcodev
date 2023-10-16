@@ -11,9 +11,7 @@ require_once('../dbutil/Conn.class.php');
  * @author anderson
  */
 class CabecViagemDAO extends Conn {
-    //put your code here
     
-
     public function verifCabec($cabec) {
 
         $select = " SELECT "

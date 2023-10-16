@@ -23,11 +23,33 @@ class AtualAplicDAO extends Conn {
     public function verAtual($nroAparelho) {
 
         $select = "SELECT "
-                . " COUNT(*) AS QTDE "
+                        . " COUNT(*) AS QTDE "
+                    . " FROM "
+                        . " PCO_ATUAL "
+                    . " WHERE "
+                        . " NRO_APARELHO = " . $nroAparelho;
+
+        $this->Conn = parent::getConn();
+        $this->Read = $this->Conn->prepare($select);
+        $this->Read->setFetchMode(PDO::FETCH_ASSOC);
+        $this->Read->execute();
+        $result = $this->Read->fetchAll();
+
+        foreach ($result as $item) {
+            $v = $item['QTDE'];
+        }
+
+        return $v;
+    }
+    
+    public function verToken($token) {
+
+        $select = "SELECT "
+                    . " COUNT(*) AS QTDE "
                 . " FROM "
-                . " PCO_ATUALIZACAO "
+                    . " PCO_ATUAL "
                 . " WHERE "
-                . " NRO_APARELHO = " . $nroAparelho;
+                    . " TOKEN = '" . $token . "'";
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
@@ -42,20 +64,20 @@ class AtualAplicDAO extends Conn {
         return $v;
     }
 
-    public function insAtual($nroAparelho, $va) {
+    public function insAtual($nroAparelho, $versao) {
 
-        $sql = "INSERT INTO PCO_ATUALIZACAO ("
-                . " NRO_APARELHO "
-                . " , VERSAO_ATUAL "
-                . " , VERSAO_NOVA "
-                . " , DTHR_ULT_ATUAL "
-                . " ) "
-                . " VALUES ("
-                . " " . $nroAparelho
-                . " , TRIM(TO_CHAR(" . $va . ", '99999999D99')) "
-                . " , TRIM(TO_CHAR(" . $va . ", '99999999D99')) "
-                . " , SYSDATE "
-                . " )";
+        $sql = "INSERT INTO PCO_ATUAL ("
+                                . " NRO_APARELHO "
+                                . " , VERSAO "
+                                . " , DTHR_ULT_ACESSO "
+                                . " , TOKEN "
+                            . " ) "
+                            . " VALUES ("
+                                . " " . $nroAparelho
+                                . " , '" . $versao . "'"
+                                . " , SYSDATE "
+                                . " , '" . strtoupper(md5('PCO-VERSAO_' . $versao . '-' . $nroAparelho)) . "'"
+                            . " )";
 
         $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
@@ -65,12 +87,11 @@ class AtualAplicDAO extends Conn {
     public function retAtual($nroAparelho) {
 
         $select = " SELECT "
-                . " VERSAO_NOVA"
-                . " , VERSAO_ATUAL"
-                . " FROM "
-                . " PCO_ATUALIZACAO "
-                . " WHERE "
-                . " NRO_APARELHO = " . $nroAparelho;
+                        . " VERSAO "
+                    . " FROM "
+                        . " PCO_ATUAL "
+                    . " WHERE "
+                        . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
@@ -81,29 +102,28 @@ class AtualAplicDAO extends Conn {
         return $result;
     }
 
-    public function updAtualNova($nroAparelho, $va) {
+    public function updAtual($nroAparelho, $versao) {
 
-        $sql = "UPDATE PCO_ATUALIZACAO "
-                . " SET "
-                . " VERSAO_ATUAL = TRIM(TO_CHAR(" . $va . ", '99999999D99'))"
-                . " , VERSAO_NOVA = TRIM(TO_CHAR(" . $va . ", '99999999D99'))"
-                . " , DTHR_ULT_ATUAL = SYSDATE "
-                . " WHERE "
-                . " NRO_APARELHO = " . $nroAparelho;
+        $sql = "UPDATE PCO_ATUAL "
+                            . " SET "
+                                . " VERSAO = '" . $versao . "'"
+                                . " , DTHR_ULT_ACESSO = SYSDATE "
+                                . " , TOKEN = '" . strtoupper(md5('PCO-VERSAO_' . $versao . '-' . $nroAparelho)) . "'"
+                            . " WHERE "
+                                . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
         $this->Create->execute();
     }
+    
+    public function updUltAcesso($nroAparelho) {
 
-    public function updAtual($nroAparelho, $va) {
-
-        $sql = "UPDATE PCO_ATUALIZACAO "
-                . " SET "
-                . " VERSAO_ATUAL = TRIM(TO_CHAR(" . $va . ", '99999999D99'))"
-                . " , DTHR_ULT_ATUAL = SYSDATE "
-                . " WHERE "
-                . " NRO_APARELHO = " . $nroAparelho;
+        $sql = "UPDATE PCO_ATUAL "
+                        . " SET "
+                            . " DTHR_ULT_ACESSO = SYSDATE "
+                        . " WHERE "
+                            . " NRO_APARELHO = " . $nroAparelho;
 
         $this->Conn = parent::getConn();
         $this->Create = $this->Conn->prepare($sql);
@@ -113,9 +133,9 @@ class AtualAplicDAO extends Conn {
     public function dataHora() {
 
         $select = " SELECT "
-                . " TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI') AS DTHR "
-                . " FROM "
-                . " DUAL ";
+                        . " TO_CHAR(SYSDATE, 'DD/MM/YYYY HH24:MI') AS DTHR "
+                    . " FROM "
+                        . " DUAL ";
 
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);

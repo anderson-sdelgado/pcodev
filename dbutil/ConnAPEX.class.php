@@ -21,17 +21,15 @@ class ConnAPEX {
 
             if (self::$Connect == null) {
 
-                $tns = "  (DESCRIPTION =
-                                (ADDRESS_LIST =
-                                  (ADDRESS = (PROTOCOL = TCP)(HOST = stafe-scan)(PORT = 1521))
-                                )
-                                (CONNECT_DATA =
-                                  (SERVER = DEDICATED)
-                                  (SERVICE_NAME = apexdev)
-                                )
-                              )";
+                $tns = "(DESCRIPTION =
+                            (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.2.10)(PORT = 1521))
+                            (CONNECT_DATA =
+                              (SERVER = DEDICATED)
+                              (SERVICE_NAME = APEXDEV)
+                            )
+                          )";
                 
-                self::$Connect = new PDO("oci:dbname=" . $tns . ';charset=utf8', 'STAFE', 'STA1553');
+                self::$Connect = new PDO("oci:dbname=" . $tns . ';charset=utf8', 'stafe', 'STA1553');
             }
         } catch (PDOException $e) {
             PHPErro($e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine());

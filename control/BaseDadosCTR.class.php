@@ -5,6 +5,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+require_once('../control/AtualAplicCTR.class.php');
+require_once('../model/AtualAplicDAO.class.php');
 require_once('../model/ColabDAO.class.php');
 require_once('../model/MotoristaDAO.class.php');
 require_once('../model/EquipDAO.class.php');
@@ -20,85 +22,144 @@ class BaseDadosCTR {
 //    private $base = 2;
 //    private $baseApex = 3;
 
-    public function dadosColab() {
+    public function dadosColab($info) {
 
-        $colabDAO = new ColabDAO();
+        $atualAplicCTR = new AtualAplicCTR();
+        
+        if($atualAplicCTR->verifToken($info)){
 
-        $dados = array("dados"=>$colabDAO->dados());
-        $json_str = json_encode($dados);
+            $colabDAO = new ColabDAO();
 
-        return $json_str;
+            $dados = array("dados"=>$colabDAO->dados());
+            $json_str = json_encode($dados);
+
+            return $json_str;
+        
+        }
         
     }
     
-    public function atualColab($info) {
+    public function pesqColab($info) {
 
-        $dado = $info['dado'];
         
-        $colabDAO = new ColabDAO();
+        $atualAplicDAO = new AtualAplicDAO();
 
-        $dadosEquip = array("dados" => $colabDAO->atual($dado));
-        $resEquip = json_encode($dadosEquip);
+        $jsonObj = json_decode($info['dado']);
+        $dados = $jsonObj->dados;
 
-        return $resEquip;
+        foreach ($dados as $d) {
+            $nroMatricula = $d->nroMatricula;
+            $token = $d->token;
+        }
+
+        $v = $atualAplicDAO->verToken($token);
+        
+        if ($v > 0) {
+            
+            $colabDAO = new ColabDAO();
+
+            $dadosEquip = array("dados" => $colabDAO->pesq($nroMatricula));
+            $resEquip = json_encode($dadosEquip);
+
+            return $resEquip;
+        
+        }
 
     }
     
-    public function dadosMoto() {
+    public function dadosMoto($info) {
 
-        $motoristaDAO = new MotoristaDAO();
+        $atualAplicCTR = new AtualAplicCTR();
+        
+        if($atualAplicCTR->verifToken($info)){
 
-        $dados = array("dados"=>$motoristaDAO->dados());
-        $json_str = json_encode($dados);
+            $motoristaDAO = new MotoristaDAO();
 
-        return $json_str;
+            $dados = array("dados"=>$motoristaDAO->dados());
+            $json_str = json_encode($dados);
+
+            return $json_str;
+        
+        }
+        
+    }
+    
+    public function pesqMoto($info) {
+        
+        $atualAplicDAO = new AtualAplicDAO();
+
+        $jsonObj = json_decode($info['dado']);
+        $dados = $jsonObj->dados;
+
+        foreach ($dados as $d) {
+            $nroMatricula = $d->nroMatricula;
+            $token = $d->token;
+        }
+
+        $v = $atualAplicDAO->verToken($token);
+        
+        if ($v > 0) {
+            
+            $motoristaDAO = new MotoristaDAO();
+
+            $dadosEquip = array("dados" => $motoristaDAO->pesq($nroMatricula));
+            $resEquip = json_encode($dadosEquip);
+
+            return $resEquip;
+            
+        }
         
         
     }
     
-    public function atualMoto($info) {
+    public function dadosEquip($info) {
 
-        $dado = $info['dado'];
+        $atualAplicCTR = new AtualAplicCTR();
         
-        $motoristaDAO = new MotoristaDAO();
+        if($atualAplicCTR->verifToken($info)){
+            
+            $equipDAO = new EquipDAO();
 
-        $dadosEquip = array("dados" => $motoristaDAO->atual($dado));
-        $resEquip = json_encode($dadosEquip);
+            $dadosEquip = array("dados" => $equipDAO->dados());
+            $resEquip = json_encode($dadosEquip);
 
-        return $resEquip;
+            return $resEquip;
+        
+        }
+        
+    }
+        
+    public function dadosTrajeto($info) {
+
+        $atualAplicCTR = new AtualAplicCTR();
+        
+        if($atualAplicCTR->verifToken($info)){
+
+            $trajetoDAO = new TrajetoDAO();
+
+            $dados = array("dados"=>$trajetoDAO->dados());
+            $json_str = json_encode($dados);
+
+            return $json_str;
+        
+        }
         
     }
     
-    public function dadosEquip() {
+    public function dadosTurno($info) {
 
-        $equipDAO = new EquipDAO();
-
-        $dadosEquip = array("dados" => $equipDAO->dados());
-        $resEquip = json_encode($dadosEquip);
-
-        return $resEquip;
+        $atualAplicCTR = new AtualAplicCTR();
         
-    }
+        if($atualAplicCTR->verifToken($info)){
+
+            $turnoDAO = new TurnoDAO();
+
+            $dados = array("dados"=>$turnoDAO->dados());
+            $json_str = json_encode($dados);
+
+            return $json_str;
         
-    public function dadosTrajeto() {
-
-        $trajetoDAO = new TrajetoDAO();
-
-        $dados = array("dados"=>$trajetoDAO->dados());
-        $json_str = json_encode($dados);
-
-        return $json_str;
-        
-    }
-    
-    public function dadosTurno() {
-
-        $turnoDAO = new TurnoDAO();
-
-        $dados = array("dados"=>$turnoDAO->dados());
-        $json_str = json_encode($dados);
-
-        return $json_str;
+        }
         
     }
     

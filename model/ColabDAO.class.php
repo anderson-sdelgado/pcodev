@@ -20,7 +20,7 @@ class ColabDAO extends Conn {
                     . " MATRIC AS \"matricColab\" "
                     . " , NOME AS \"nomeColab\" "
                 . " FROM "
-                    . " VIEW_PCO_PASSAGEIRO";
+                    . " VIEW_PCO_PASSAGEIRO ";
         
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);
@@ -32,14 +32,14 @@ class ColabDAO extends Conn {
         
     }
     
-    public function atual($colab) {
+    public function pesq($nroMatricula) {
 
         $select = " SELECT "
                     . " MATRIC AS \"matricColab\" "
                     . " , NOME AS \"nomeColab\" "
                 . " FROM "
                     . " VIEW_PCO_PASSAGEIRO"
-                . " WHERE MATRIC = " . $colab;
+                . " WHERE MATRIC = " . $nroMatricula;
         
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);

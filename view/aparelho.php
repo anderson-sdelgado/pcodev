@@ -6,7 +6,7 @@ require_once('../control/AtualAplicCTR.class.php');
 
 if (isset($info)):
 
-   $atualAplicCTR = new AtualAplicCTR();
-   echo $atualAplicCTR->atualAplic($info);
+    $atualAplicCTR = new AtualAplicCTR();
+    echo $retorno = $atualAplicCTR->inserirDados($info);
 
 endif;

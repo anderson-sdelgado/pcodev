@@ -7,6 +7,6 @@ require_once('../control/BaseDadosCTR.class.php');
 if (isset($info)):
 
     $baseDadosCTR = new BaseDadosCTR();
-    echo $retorno = $baseDadosCTR->atualColab($info);
+    echo $retorno = $baseDadosCTR->pesqMoto($info);
 
 endif;

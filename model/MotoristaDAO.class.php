@@ -40,15 +40,15 @@ class MotoristaDAO extends Conn {
         
     }
     
-    public function atual($moto) {
+    public function pesq($nroMatricula) {
 
         $select = " SELECT "
                     . " NRO_CRACHA AS \"matricMoto\" "
                     . " , FUNC_NOME AS \"nomeMoto\" "
                 . " FROM "
-                    . " USINAS.V_SIMOVA_FUNC"
+                    . " USINAS.V_SIMOVA_FUNC "
                 . " WHERE"
-                    . " NRO_CRACHA = " . $moto;
+                    . " NRO_CRACHA = " . $nroMatricula;
         
         $this->Conn = parent::getConn();
         $this->Read = $this->Conn->prepare($select);

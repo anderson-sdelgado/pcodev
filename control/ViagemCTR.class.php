@@ -14,7 +14,6 @@ require_once('../model/PassageiroViagemDAO.class.php');
  */
 class ViagemCTR {
     
-    
     public function salvarDadosCabecAberto($info) {
 
         $dados = $info['dado'];
