@@ -12,7 +12,6 @@ require_once('../model/AtualAplicDAO.class.php');
  * @author anderson
  */
 class AtualAplicCTR {
-    //put your code here
     
     public function atualAplic($info) {
 
